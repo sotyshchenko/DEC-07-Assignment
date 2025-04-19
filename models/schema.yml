@@ -1,0 +1,170 @@
+version: 2
+
+models:
+  - name: customers
+    description: "Customer details including personal info and registration data"
+    columns:
+      - name: customer_id
+        description: "Unique identifier for each customer"
+        tests:
+          - unique
+          - not_null
+      - name: first_name
+        description: "First name of the customer"
+        tests:
+          - not_null
+      - name: last_name
+        description: "Last name of the customer"
+      - name: email
+        description: "Email address of the customer"
+      - name: registration_date
+        description: "The date the customer registered"
+
+  - name: orders
+    description: "Individual customer orders and their statuses"
+    columns:
+      - name: order_id
+        description: "Unique identifier for each order"
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "The ID of the customer who placed the order"
+        tests:
+          - not_null
+      - name: product_id
+        description: "The ID of the product ordered"
+      - name: order_date
+        description: "The date the order was placed"
+      - name: status
+        description: "Status of the order"
+        tests:
+          - accepted_values:
+              values: ["placed", "shipped", "completed", "return_pending", "returned"]
+
+  - name: daily_orders
+    description: "Aggregated count of orders per day"
+    columns:
+      - name: order_date
+        description: "The date on which orders were placed"
+      - name: daily_order_count
+        description: "The number of orders placed on a specific day"
+
+  - name: customer_lifetime_value
+    description: "Lifetime value calculation for each customer"
+    columns:
+      - name: customer_id
+        description: "Customer identifier"
+      - name: lifetime_value
+        description: "Total value of orders attributed to this customer"
+
+  - name: customer_segments
+    description: "Segments each customer belongs to based on purchase behavior"
+    columns:
+      - name: customer_id
+        description: "Customer identifier"
+        tests:
+          - not_null
+          - unique
+      - name: segment
+        description: "Assigned segment based on behavior"
+        tests:
+          - accepted_values:
+              values: ["loyal", "at risk", "churned"]
+
+  - name: first_order_summary
+    description: "Summary of each customer's first order"
+    columns:
+      - name: customer_id
+        description: "Customer identifier"
+        tests:
+          - not_null
+          - unique
+      - name: first_order_date
+        description: "Date of the customer's first order"
+      - name: first_order_value
+        description: "Value of the first order"
+
+  - name: gift_card_payments
+    description: "Payments made using gift cards"
+    columns:
+      - name: payment_id
+        description: "Unique identifier for each payment"
+      - name: order_id
+        description: "Associated order ID"
+      - name: amount
+        description: "Gift card payment amount"
+
+  - name: product_category_performance
+    description: "Aggregated sales performance by product category"
+    columns:
+      - name: product_category
+        description: "The product category"
+      - name: total_sales
+        description: "Total sales for the category"
+      - name: avg_order_value
+        description: "Average order value for the category"
+
+  - name: product_repeat_purchase
+    description: "Repeat purchase metrics for individual products"
+    columns:
+      - name: product_id
+        description: "Product ID"
+      - name: repeat_purchase_rate
+        description: "Proportion of orders that were repeat purchases"
+
+  - name: product_stock
+    description: "Current stock level for each product"
+    columns:
+      - name: product_id
+        description: "Product identifier"
+      - name: stock_quantity
+        description: "Current quantity in stock"
+
+  - name: quarterly_orders
+    description: "Aggregated order data by quarter"
+    columns:
+      - name: quarter
+        description: "Quarter of the year"
+        tests:
+          - accepted_values:
+              values: ["Q1", "Q2", "Q3", "Q4"]
+      - name: total_orders
+        description: "Total number of orders in the quarter"
+      - name: total_revenue
+        description: "Total revenue in the quarter"
+
+  - name: ranked_customers_by_month
+    description: "Customers ranked by total order value each month"
+    columns:
+      - name: customer_id
+        description: "Customer identifier"
+        tests:
+          - not_null
+      - name: month
+        description: "Month for the ranking"
+      - name: total_order_value
+        description: "Total value of orders"
+      - name: rank
+        description: "Customer rank for the month"
+
+  - name: top_customers
+    description: "Top customers by overall order value"
+    columns:
+      - name: customer_id
+        description: "Customer identifier"
+        tests:
+          - not_null
+          - unique
+      - name: total_value
+        description: "Total value of all orders"
+
+  - name: top_selling_products
+    description: "Products with the highest number of sales"
+    columns:
+      - name: product_id
+        description: "Product identifier"
+      - name: total_sales
+        description: "Total number of units sold"
+      - name: revenue
+        description: "Total revenue from product sales"

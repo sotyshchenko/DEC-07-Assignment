@@ -1,0 +1,101 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: "Staging model for customer data"
+    columns:
+      - name: customer_id
+        description: "Unique ID of the customer"
+        tests:
+          - unique
+          - not_null
+      - name: first_name
+        description: "Customer's first name"
+        tests:
+          - not_null
+      - name: last_name
+        description: "Customer's last name"
+      - name: email
+        description: "Customer's email"
+        tests:
+          - unique
+      - name: registration_date
+        description: "Date of customer registration"
+
+  - name: stg_orders
+    description: "Staging model for order data"
+    columns:
+      - name: order_id
+        description: "Unique ID of the order"
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "ID of the customer who placed the order"
+        tests:
+          - not_null
+      - name: product_id
+        description: "ID of the product ordered"
+      - name: order_date
+        description: "Date when the order was placed"
+      - name: status
+        description: "Current status of the order"
+        tests:
+          - accepted_values:
+              values: [ 'placed', 'shipped', 'completed', 'return_pending', 'returned' ]
+
+  - name: stg_payments
+    description: "Staging model for payment data"
+    columns:
+      - name: payment_id
+        description: "Unique ID of the payment"
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        description: "Associated order ID"
+        tests:
+          - not_null
+      - name: payment_method
+        description: "Payment method used"
+        tests:
+          - accepted_values:
+              values: [ 'paypal', 'credit_card', 'coupon', 'bank_transfer', 'gift_card' ]
+      - name: amount
+        description: "Payment amount in cents"
+
+  - name: stg_products
+    description: "Staging model for product (book) data"
+    columns:
+      - name: product_id
+        description: "Unique ID of the product"
+        tests:
+          - unique
+          - not_null
+      - name: book_name
+        description: "Name/title of the book"
+      - name: author
+        description: "Author of the book"
+      - name: product_category
+        description: "Category of the book"
+      - name: product_price
+        description: "Price of the book"
+
+  - name: stg_stock
+    description: "Staging model for product stock quantities"
+    columns:
+      - name: product_id
+        description: "Product ID (foreign key)"
+        tests:
+          - not_null
+      - name: stock_quantity
+        description: "Available quantity in stock"
+
+
+sources:
+  - name: raw
+    database: dec07assignment
+    schema: raw
+    tables:
+      - name: raw_payments
+      - name: raw_stock
